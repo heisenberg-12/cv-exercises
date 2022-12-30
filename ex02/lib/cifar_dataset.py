@@ -39,5 +39,5 @@ def create_dataloader(dataset: Dataset, batch_size: int, is_train: bool = True,
     # START TODO #################
     # Create an instance of the DataLoader class given the dataset, batch_size and num_workers.
     # Set the shuffle parameter to True if is_train is True, otherwise set it to False.
-    raise NotImplementedError
+    return DataLoader(dataset, batch_size=batch_size, shuffle=is_train)
     # END TODO ###################

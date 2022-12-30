@@ -54,7 +54,8 @@ def main():
         # load model weights from the file given by args.load_model and apply them to the model
         # weights = th.load ...
         # model.load_state_dict ...
-        raise NotImplementedError
+        weights = th.load(args.load_model)
+        model.load_state_dict(weights)
         # END TODO ###################
 
     # move the model to our device
@@ -71,7 +72,7 @@ def main():
     # Create the loss function (nn.CrossEntropyLoss)
     # START TODO #################
     # loss_fn = ...
-    raise NotImplementedError
+    loss_fn = nn.CrossEntropyLoss()
     # END TODO ###################
 
     # create optimizer given the string in args.optimizer
@@ -79,7 +80,7 @@ def main():
         # START TODO #################
         # create stochastic gradient descent optimizer (optim.SGD) given model.parameters() and args.learning_rate
         # optimizer = ...
-        raise NotImplementedError
+        optimizer = optim.SGD(model.parameters(), lr=args.learning_rate)
         # END TODO ###################
     elif args.optimizer == "adamw":
         # START TODO #################
@@ -111,11 +112,15 @@ def main():
                 # START TODO #################
                 # training process is as follows:
                 # 1) use optimizer.zero_grad() to zero the gradients in the optimizer
+                optimizer.zero_grad()
                 # 2) compute the output of the model given the data by using model(input)
+                output = model(data)
                 # 3) compute the loss between the output and the label by using loss_fn(output, label)
+                loss = loss_fn(output, label)
                 # 4) use loss.backward() to accumulate the gradients
+                loss.backward()
                 # 5) use optimizer.step() to update the weights
-                raise NotImplementedError
+                optimizer.step()
                 # END TODO ###################
 
                 # log the loss
@@ -137,14 +142,17 @@ def main():
 
                 # START TODO #################
                 # 1) compute the output of the model given the data
+                output = model(data)
                 # 2) compute the loss between the output and the label
+                loss = loss_fn(output, label)
                 # 3) predictions are given as logits, i.e. pre-softmax class probabilities.
                 #     use th.argmax over axis 1 of the logits to get the predictions
+                predictions = th.argmax(output, axis=1)
                 # 4) compute the accuracy by comparing the predictions with the labels
+                acc = th.sum(predictions == label) / args.batch_size
                 #   - use predictions == labels to get the correctness for each prediction
                 #   - use th.sum to get the total number of correct predictions
                 #   - divide by the batchsize to get the accuracy
-                raise NotImplementedError
                 # END TODO ###################
 
                 total_loss += loss.item()
@@ -167,7 +175,7 @@ def main():
     print(f"Saving model to {model_file}")
     # START TODO #################
     # save the model to disk by using th.save with parameters model.state_dict() and model_file
-    raise NotImplementedError
+    th.save(model.state_dict(), model_file)
     # END TODO ###################
 
 
